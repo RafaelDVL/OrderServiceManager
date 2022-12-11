@@ -2,7 +2,9 @@ package com.rafaelDvl.orderservicemanager.services;
 
 
 import com.rafaelDvl.orderservicemanager.DTOS.TecnicoDTO;
+import com.rafaelDvl.orderservicemanager.domain.Pessoa;
 import com.rafaelDvl.orderservicemanager.domain.Tecnico;
+import com.rafaelDvl.orderservicemanager.repositories.PessoaRepository;
 import com.rafaelDvl.orderservicemanager.repositories.TecnicoRepository;
 import com.rafaelDvl.orderservicemanager.services.exceptions.DataIntegratyViolationException;
 import com.rafaelDvl.orderservicemanager.services.exceptions.ObjectNotFoundException;
@@ -19,6 +21,9 @@ public class TecnicoService {
     @Autowired
     TecnicoRepository tecnicoRepository;
 
+    @Autowired
+    PessoaRepository pessoaRepository;
+
     public Tecnico findById(Integer id) {
         Optional<Tecnico> obj = tecnicoRepository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo " + Tecnico.class.getName()));
@@ -34,13 +39,12 @@ public class TecnicoService {
         if(findByCPF(objDTO) != null){
             throw new DataIntegratyViolationException("CPF ja cadastrado na base de dados!!!");
         }
-
         return tecnicoRepository.save(new Tecnico(null, objDTO.getNome(), objDTO.getCpf(), objDTO.getTelefone()));
     }
 
 
-    public Tecnico findByCPF(TecnicoDTO objDTO){
-        Tecnico obj = tecnicoRepository.findByCPF(objDTO.getCpf());
+    public Pessoa findByCPF(TecnicoDTO objDTO){
+        Pessoa obj = pessoaRepository.findByCPF(objDTO.getCpf());
         if(obj != null){
             return obj;
         }
@@ -60,6 +64,10 @@ public class TecnicoService {
     }
 
     public void delete(Integer id) {
+        Tecnico obj = findById(id);
+        if(obj.getList().size() > 0){
+            throw new DataIntegratyViolationException("Tecnico possui ordens de serviço, não pode ser deletado!!!");
+        }
         tecnicoRepository.deleteById(id);
     }
 }
