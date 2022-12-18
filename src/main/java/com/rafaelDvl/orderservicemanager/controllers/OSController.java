@@ -50,8 +50,8 @@ public class OSController {
         return ResponseEntity.created(uri).build();
     }
     @PutMapping("/{id}")
-    public ResponseEntity<OSDTO> update(@PathVariable Integer id, @RequestBody @Valid OSDTO osdto){
-        OSDTO newObj = new OSDTO(osServices.update(osdto));
+    public ResponseEntity<OSDTO> update(@PathVariable Integer id, @Valid @RequestBody OSDTO osdto){
+        OSDTO newObj = new OSDTO(osServices.update(id, osdto));
         return ResponseEntity.status(HttpStatus.OK).body(newObj);
     }
 }

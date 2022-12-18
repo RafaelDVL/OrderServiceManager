@@ -4,8 +4,6 @@ import com.rafaelDvl.orderservicemanager.DTOS.OSDTO;
 import com.rafaelDvl.orderservicemanager.domain.Cliente;
 import com.rafaelDvl.orderservicemanager.domain.OS;
 import com.rafaelDvl.orderservicemanager.domain.Tecnico;
-import com.rafaelDvl.orderservicemanager.domain.enuns.Prioridade;
-import com.rafaelDvl.orderservicemanager.domain.enuns.Status;
 import com.rafaelDvl.orderservicemanager.repositories.OsRepository;
 import com.rafaelDvl.orderservicemanager.services.exceptions.ObjectNotFoundException;
 import jakarta.validation.Valid;
@@ -28,7 +26,7 @@ public class OsServices {
     @Autowired
     private ClienteService clienteService;
 
-    public OS update(@Valid OSDTO osdto) {
+    public OS update(Integer id, @Valid OSDTO osdto) {
         findById(osdto.getId());
         return fromDTO(osdto);
     }
@@ -38,7 +36,7 @@ public class OsServices {
         return osRepository.findAll();
     }
 
-    public OS findById(Integer id) {
+    public OS findById(Integer id)  {
         Optional<OS> obj = osRepository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado!" + id + ", tipo: " + OS.class.getName()));
     }
@@ -51,8 +49,8 @@ public class OsServices {
         OS newObj = new OS();
         newObj.setId(obj.getId());
         newObj.setObservacoes(obj.getObservacoes());
-        newObj.setPrioridade(Prioridade.toEnum(obj.getPrioridade()));
-        newObj.setStatus(Status.toEnum(obj.getStatus()));
+        newObj.setPrioridade((obj.getPrioridade()));
+        newObj.setStatus((obj.getStatus()));
         Tecnico tc = tecnicoService.findById(obj.getTecnico());
         Cliente cl = clienteService.findById(obj.getCliente());
 
@@ -62,7 +60,6 @@ public class OsServices {
         if(newObj.getStatus().getCod().equals(2)){
             newObj.setDataFechamento(LocalDateTime.now());
         }
-
         return osRepository.save(newObj);
     }
 }

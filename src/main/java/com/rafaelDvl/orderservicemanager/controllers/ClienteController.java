@@ -1,11 +1,8 @@
 package com.rafaelDvl.orderservicemanager.controllers;
 
 import com.rafaelDvl.orderservicemanager.DTOS.ClienteDTO;
-import com.rafaelDvl.orderservicemanager.DTOS.TecnicoDTO;
 import com.rafaelDvl.orderservicemanager.domain.Cliente;
-import com.rafaelDvl.orderservicemanager.domain.Tecnico;
 import com.rafaelDvl.orderservicemanager.services.ClienteService;
-import com.rafaelDvl.orderservicemanager.services.TecnicoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,8 +31,7 @@ public class ClienteController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(listDTO);
     }
-
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<ClienteDTO> findById(@PathVariable Integer id){
         ClienteDTO objDTO = new ClienteDTO(service.findById(id));
